@@ -896,7 +896,7 @@ function showAuth(on) {
     $('#sync').textContent = 'מתחבר…';
     const fail = er => { if (er && er.code === 'permission-denied') { S.canWrite = false; $('#ro').hidden = false; $('#sync').textContent = 'אין הרשאה'; } else $('#sync').textContent = 'אין חיבור'; };
     if (S.pendingName) { try { await db.doc('people/' + u.uid).set({ name: S.pendingName }); } catch (er) {} S.pendingName = null; }
-    db.collection('statements').onSnapshot(snap => { S.statements = snap.docs.map(d => d.data()); $('#sync').textContent = snap.metadata.fromCache ? 'לא מקוון' : 'מסונכרן'; renderAll(); }, fail);
+    db.collection('statements').onSnapshot({ includeMetadataChanges: true }, snap => { S.statements = snap.docs.map(d => d.data()); $('#sync').textContent = snap.metadata.fromCache ? 'לא מקוון' : 'מסונכרן'; renderAll(); }, fail);
     db.collection('captures').orderBy('date', 'desc').limit(1500).onSnapshot(snap => {
       S.captures = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAll(); }, fail);
     db.doc('settings/main').onSnapshot(snap => {
