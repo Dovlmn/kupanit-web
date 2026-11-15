@@ -149,3 +149,25 @@ nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent
 .auth-icon{align-self:center;border-radius:18px}
 input[type=email],input[type=password]{font:inherit;width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
 input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
+
+/* מחשב: מסך רחב, שני טורים במקום טור אחד כמו בטלפון */
+@media (min-width: 960px) {
+  .wrap { max-width: 1180px; padding-top: 24px; }
+  h1 { font-size: 26px; }
+  section[data-tab="week"] {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start;
+    grid-template-areas: "thu thu" "cele cele" "env form" "piggy form" "weeks list" ". list";
+  }
+  #thu { grid-area: thu; } #celebrate { grid-area: cele; }
+  #thu:empty, #celebrate:empty { display: none; }
+  #envelope { grid-area: env; } #piggy { grid-area: piggy; }
+  #capture { grid-area: form; } #week-card { grid-area: list; } #weeks-card { grid-area: weeks; }
+  .env-left { font-size: 48px; }
+  section[data-tab="month"] { max-width: 980px; width: 100%; margin-inline: auto; }
+  .kpi .v { font-size: 30px; }
+  section[data-tab="settings"] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  section[data-tab="settings"] > h2 { grid-column: 1 / -1; }
+  section[data-tab="upload"], section[data-tab="review"] { max-width: 820px; width: 100%; margin-inline: auto; }
+  nav.tabs .in { max-width: 560px; }
+  .toast { bottom: 90px; }
+}
