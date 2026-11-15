@@ -171,3 +171,14 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
   nav.tabs .in { max-width: 560px; }
   .toast { bottom: 90px; }
 }
+
+/* מסך רחב במיוחד: שלושה טורים */
+@media (min-width: 1280px) {
+  .wrap { max-width: 1480px; }
+  section[data-tab="week"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas: "thu thu thu" "cele cele cele" "env form list" "piggy form list" "weeks form list" ". form list";
+  }
+  section[data-tab="settings"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  section[data-tab="month"] { max-width: 1100px; }
+}
