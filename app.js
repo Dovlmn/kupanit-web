@@ -252,6 +252,7 @@ function renderWeek() {
       <div class="small muted" style="margin-top:4px">הכסף נשאר בקופה, ויוצא ממנה רק כדי לכסות חריגה מתקציב שבועי.</div>
     </div>` : '';
   $('#piggy').hidden = !(start && budget);
+  pushWidget({ left: notStarted ? fmt(budget) : fmt(Math.abs(left)), leftLabel: notStarted ? 'התקציב השבועי' : left >= 0 ? 'נשאר השבוע' : 'חריגה השבוע', over: !notStarted && left < 0, jar: start && budget ? fmt(sv.total) : '' });
 
   $('#week-range').textContent = `${shortDate(ws)} 13:00 – ${shortDate(we)} 13:00`;
   const shown = notStarted ? caps.filter(r => weekOf(r.d, r.tm) === ws).sort((x, y) => x.d < y.d ? 1 : -1) : items;
@@ -719,6 +720,33 @@ function renderAccount() {
     <button class="linkbtn" type="button" id="acc-rename">שינוי שם</button><button class="linkbtn danger" type="button" id="acc-out">יציאה</button></div>` : '';
 }
 
+/* ---------- home-screen widget (Android app only) ---------- */
+let KPPlugin = null, lastWidget = '';
+function kupanitPlugin() {
+  if (KPPlugin) return KPPlugin;
+  const C = window.Capacitor;
+  if (!C || !(C.isNativePlatform ? C.isNativePlatform() : C.platform !== 'web')) return null;
+  try { KPPlugin = C.registerPlugin ? C.registerPlugin('Kupanit') : (C.Plugins && C.Plugins.Kupanit); } catch (e) { KPPlugin = C.Plugins && C.Plugins.Kupanit; }
+  return KPPlugin || null;
+}
+function pushWidget(d) {
+  const K = kupanitPlugin(); if (!K || !S.db) return;
+  const key = JSON.stringify(d); if (key === lastWidget) return; lastWidget = key;
+  K.setWidget({ ...d, updated: hhmm() }).catch(() => {});
+}
+async function checkWidgetAction() {
+  const K = kupanitPlugin(); if (!K) return;
+  try {
+    const r = await K.takeAction();
+    if (r && r.action === 'add') {
+      if (S.editing) endEdit();
+      go('week');
+      setTimeout(() => { $('#capture').scrollIntoView({ block: 'start' }); $('#cap-amount').focus(); }, 150);
+    } else if (r && r.action === 'week') go('week');
+  } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastWidget = ''; setTimeout(checkWidgetAction, 200); } });
+
 /* ---------- notifications (Android app only) ---------- */
 let LNPlugin = null;
 function notifPlugin() {
@@ -877,6 +905,7 @@ function showAuth(on) {
     db.doc('settings/suggest').onSnapshot(snap => { S.suggest = snap.exists ? snap.data() : null; renderAll(); }, () => {});
     listenPeople(db);
     renderAccount(); renderNotif(); applyNotifications(true);
+    checkWidgetAction();
     renderAll();
   });
 })();
