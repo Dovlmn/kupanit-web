@@ -1,6 +1,13 @@
 /* KUPANIT_APP — ממשק הקופנית. נטען בכל פתיחה של האפליקציה. */
 /* הגדרות Firebase של הקופנית (לא סוד: הגישה לנתונים נשלטת בכללי האבטחה ב-Firebase) */
-window.KUPANIT_FIREBASE = window.KUPANIT_FIREBASE || null;
+window.KUPANIT_FIREBASE = window.KUPANIT_FIREBASE || {
+  apiKey: "AIzaSyAbz2KkJaqJ8eqcPnsenmedouCQ8B9BB7o",
+  authDomain: "kupanit-97e54.firebaseapp.com",
+  projectId: "kupanit-97e54",
+  storageBucket: "kupanit-97e54.firebasestorage.app",
+  messagingSenderId: "981597127863",
+  appId: "1:981597127863:web:71b596db89dfdd60adb932"
+};
 (() => {
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
