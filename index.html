@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>קופנית</title>
+<meta name="theme-color" content="#1E6A4C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Secular+One&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<script>
+/* גרסת הדפדפן: אותו ממשק שהאפליקציה טוענת (app.html, style.css, app.js) */
+fetch('app.html', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (html) {
+  document.body.insertAdjacentHTML('afterbegin', html);
+  var s = document.createElement('script'); s.src = 'app.js?t=' + Date.now(); document.body.appendChild(s);
+});
+</script>
+</body>
+</html>

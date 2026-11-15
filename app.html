@@ -1,0 +1,156 @@
+<div class="auth" id="auth" dir="rtl" lang="he" hidden>
+  <form class="card auth-card" id="auth-form" autocomplete="on">
+    <img class="auth-icon" src="icon-192.png" alt="" width="72" height="72">
+    <h1>קופנית</h1>
+    <div id="au-name-row"><label class="lbl" for="au-name">השם שלך</label><input type="text" id="au-name" autocomplete="given-name" placeholder="יופיע ליד ההוצאות שתרשמו"></div>
+    <div><label class="lbl" for="au-email">מייל</label><input type="email" id="au-email" autocomplete="email" dir="ltr" required></div>
+    <div><label class="lbl" for="au-pass">סיסמה</label><input type="password" id="au-pass" autocomplete="current-password" dir="ltr" required minlength="6"></div>
+    <div class="small" id="au-err" style="color:var(--bad);min-height:1.2em" role="alert"></div>
+    <button class="btn wide" id="au-go" type="submit">כניסה</button>
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <button class="linkbtn" type="button" id="au-switch">עוד אין לי חשבון</button>
+      <button class="linkbtn" type="button" id="au-reset">שכחתי סיסמה</button>
+    </div>
+  </form>
+</div>
+<div class="wrap" dir="rtl" lang="he">
+  <header class="top">
+    <h1>קופנית</h1>
+    <span class="chip" id="sync">מתחבר…</span>
+  </header>
+
+  <div class="note" id="ro" hidden>החשבון הזה לא מורשה לגשת לנתונים של הקופנית. רק שני החשבונות של המשפחה יכולים להיכנס.</div>
+
+  <!-- WEEK -->
+  <section data-tab="week">
+    <div id="thu"></div>
+    <div id="celebrate"></div>
+    <div class="card env" id="envelope"></div>
+    <div class="card" id="piggy" hidden></div>
+
+    <form class="card" id="capture" style="display:flex;flex-direction:column;gap:14px" autocomplete="off">
+      <h2 id="cap-title">הוצאה חדשה</h2>
+      <div class="amount"><span>₪</span><input id="cap-amount" inputmode="decimal" placeholder="0" aria-label="סכום"></div>
+      <div>
+        <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">קטגוריה</div>
+        <div class="cats" id="cap-cats"></div>
+      </div>
+      <div class="field-row">
+        <div><label class="lbl" for="cap-note">איפה / על מה</label><input type="text" id="cap-note" placeholder="למשל: בר כל טוב"></div>
+        <div><label class="lbl" for="cap-date">תאריך</label><input type="date" id="cap-date"></div>
+        <div style="flex:0 1 110px"><label class="lbl" for="cap-time">שעה</label><input type="time" id="cap-time"></div>
+      </div>
+      <div>
+        <div class="lbl" style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">אמצעי תשלום</div>
+        <div class="seg" id="cap-pay">
+          <button type="button" data-pay="card" aria-pressed="true">אשראי</button>
+          <button type="button" data-pay="cash" aria-pressed="false">מזומן</button>
+          <button type="button" data-pay="bit" aria-pressed="false">ביט / פייבוקס</button>
+        </div>
+      </div>
+      <button class="btn wide" id="cap-save" type="submit">שמור הוצאה</button>
+      <button class="btn ghost wide" id="cap-cancel" type="button" hidden>ביטול עריכה</button>
+    </form>
+
+    <div class="card">
+      <div class="top"><h2>השבוע</h2><span class="small muted" id="week-range"></span></div>
+      <div class="list" id="week-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="top"><h2>8 השבועות האחרונים</h2><span class="small muted">הקו המקווקו מסמן את התקציב</span></div>
+      <div id="weeks" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- MONTH -->
+  <section data-tab="month" hidden>
+    <div class="top">
+      <h2>פירוט חודשי</h2>
+      <select id="month-sel" style="width:auto" aria-label="חודש חיוב"></select>
+    </div>
+    <div id="month-body"></div>
+  </section>
+
+  <!-- REVIEW -->
+  <section data-tab="review" hidden>
+    <div class="top"><h2>סידור קטגוריות</h2><button class="linkbtn" type="button" data-go="month">חזרה</button></div>
+    <p class="small muted" style="margin:0">ליד כל בית עסק כבר מסומנת הקטגוריה שאני מציע. תקנו רק את מה שלא נכון, ובסוף לחצו "שמירה". ההגדרה חלה על כל העסקאות של בית העסק, גם בחודשים הבאים.</p>
+    <div id="review-body"></div>
+    <div style="position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));padding-block:8px;background:var(--bg)">
+      <button class="btn wide" type="button" id="rv-save">שמירה</button>
+    </div>
+  </section>
+
+  <!-- UPLOAD -->
+  <section data-tab="upload" hidden>
+    <h2>העלאת דפי אשראי</h2>
+    <label class="drop" id="drop" for="file">
+      <strong>בחרו קבצי אקסל מאתר חברת האשראי</strong>
+      <span class="small muted">אפשר לבחור כמה קבצים יחד, קובץ לכל כרטיס. העלאה חוזרת של אותו חודש ואותו כרטיס מחליפה את הנתונים הקודמים.</span>
+      <span class="btn ghost">בחירת קבצים</span>
+      <input type="file" id="file" accept=".xlsx,.xls,.csv" multiple hidden>
+    </label>
+    <div id="preview"></div>
+    <div class="card">
+      <h2>דפים שמורים</h2>
+      <div class="list" id="stmts"></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section data-tab="settings" hidden>
+    <h2>הגדרות</h2>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <label class="lbl" for="set-budget">תקציב שבועי להוצאות משתנות (₪)</label>
+      <div class="field-row"><input type="number" id="set-budget" inputmode="numeric" min="0" step="50"><button class="btn ghost" id="set-budget-save" type="button" style="flex:0 0 auto">שמירה</button></div>
+      <label class="lbl" for="set-start">התקציב השבועי נספר החל מתאריך</label>
+      <div class="field-row"><input type="date" id="set-start"><button class="btn ghost" id="set-start-save" type="button" style="flex:0 0 auto">שמירה</button></div>
+      <p class="small muted" style="margin:0">כשנשאר כסף בסוף שבוע, היתרה עוברת לקופת החיסכון. שבוע עם חריגה לא מוריד מהקופה. שינוי תקציב חל מהשבוע הנוכחי ואילך, ולא משנה שבועות שעברו.</p>
+      <p class="small muted" style="margin:0">השבוע מתחיל ביום חמישי ב-13:00 ונגמר ביום חמישי הבא ב-13:00. נספרות בו ההוצאות שסומנו כמשתנות, מהדפים ומהרישום הידני. הוראות קבע, תשלומים ומנויים לא נספרים. משיכת מזומן לא נספרת, כי את מה שקונים במזומן רושמים ידנית.</p>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <h3 style="font-size:17px">לא נכללים בחישוב</h3>
+      <p class="small muted" style="margin:0">עסקה שבשם בית העסק שלה מופיע אחד הביטויים האלה לא נספרת בשום מקום.</p>
+      <div class="list" id="excl"></div>
+      <div class="field-row"><input type="text" id="excl-new" placeholder="למשל: מס הכנסה"><button class="btn ghost" id="excl-add" type="button" style="flex:0 0 auto">הוספה</button></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <h3 style="font-size:17px">התאמות לבתי עסק</h3>
+      <p class="small muted" style="margin:0">כדי לשנות קטגוריה, סוג (קבוע או משתנה) או החרגה, לוחצים על בית העסק בפירוט החודשי.</p>
+      <div class="list" id="rules"></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <h3 style="font-size:17px">החשבון שלי</h3>
+      <div class="list" id="account"></div>
+    </div>
+    <div class="card" id="notif-card" style="display:flex;flex-direction:column;gap:10px" hidden>
+      <h3 style="font-size:17px">התראות בטלפון הזה</h3>
+      <label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="nf-daily"> תזכורת לרשום הוצאות, כל ערב ב-22:00 (חוץ מליל שבת)</label>
+      <label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="nf-thu"> הודעה על שבוע חדש, ביום חמישי ב-13:00</label>
+      <button class="btn ghost" type="button" id="nf-save" style="align-self:flex-start">שמירה</button>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <h3 style="font-size:17px">העברה מהקופנית שב-Claude</h3>
+      <p class="small muted" style="margin:0">בקופנית הישנה, בהגדרות, לוחצים "ייצוא", ואז בוחרים כאן את הקובץ שנשמר. אפשר לחזור על זה בלי חשש: רשומות קיימות מתעדכנות ולא מוכפלות.</p>
+      <label class="btn ghost" for="imp-file" style="align-self:flex-start">בחירת קובץ ייצוא</label>
+      <input type="file" id="imp-file" accept=".json,application/json" hidden>
+      <details><summary class="small" style="cursor:pointer">העתקתם במקום לשמור קובץ? הדביקו כאן</summary>
+        <textarea id="imp-text" rows="4" style="width:100%;margin-top:8px;font:inherit;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px" dir="ltr"></textarea>
+        <button class="btn ghost" type="button" id="imp-paste-go" style="margin-top:6px">ייבוא</button></details>
+      <div class="small" id="imp-status"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" hidden><div></div></div>
+
+<nav class="tabs" dir="rtl" aria-label="ניווט">
+  <div class="in">
+    <button data-go="week" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>השבוע</button>
+    <button data-go="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>חודשי</button>
+    <button data-go="upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>העלאה</button>
+    <button data-go="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>הגדרות</button>
+  </div>
+</nav>
+
