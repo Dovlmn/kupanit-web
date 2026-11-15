@@ -721,7 +721,7 @@ function renderAccount() {
 }
 
 /* ---------- home-screen widget (Android app only) ---------- */
-let KPPlugin = null, lastWidget = '';
+var KPPlugin = null, lastWidget = '';
 function kupanitPlugin() {
   if (KPPlugin) return KPPlugin;
   const C = window.Capacitor;
@@ -748,7 +748,7 @@ async function checkWidgetAction() {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastWidget = ''; setTimeout(checkWidgetAction, 200); } });
 
 /* ---------- notifications (Android app only) ---------- */
-let LNPlugin = null;
+var LNPlugin = null;
 function notifPlugin() {
   if (LNPlugin) return LNPlugin;
   const C = window.Capacitor;
