@@ -157,6 +157,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
   section[data-tab="week"] {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start;
     grid-template-areas: "thu thu" "cele cele" "env form" "piggy form" "weeks list" ". list";
+    grid-template-rows: auto auto auto auto auto 1fr;
   }
   #thu { grid-area: thu; } #celebrate { grid-area: cele; }
   #thu:empty, #celebrate:empty { display: none; }
@@ -178,6 +179,7 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
   section[data-tab="week"] {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr);
     grid-template-areas: "thu thu thu" "cele cele cele" "env form list" "piggy form list" "weeks form list" ". form list";
+    grid-template-rows: auto auto auto auto auto 1fr;
   }
   section[data-tab="settings"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   section[data-tab="month"] { max-width: 1100px; }
