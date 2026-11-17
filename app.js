@@ -545,27 +545,14 @@ function renderPreview() {
   const exists = new Set(S.statements.map(s => `${s.card}_${s.month}`));
   $('#preview').innerHTML = `<div class="card" style="display:flex;flex-direction:column;gap:10px"><h2>מוכן לשמירה</h2><div class="list">${keys.map(k => {
     const g = p[k]; const tot = g.rows.reduce((t, r) => t + r.a, 0);
-    return `<div class="li"><div class="main"><div>${monthName(g.month)} · כרטיס ${esc(g.card)}</div><div class="small muted">${g.rows.length} עסקאות${exists.has(k) ? ' · יתווסף לדף הקיים, בלי כפילויות' : ''}</div></div><div class="amt num">${fmt(tot)}</div></div>`; }).join('')}</div>
+    return `<div class="li"><div class="main"><div>${monthName(g.month)} · כרטיס ${esc(g.card)}</div><div class="small muted">${g.rows.length} עסקאות${exists.has(k) ? ' · יחליף דף קיים' : ''}</div></div><div class="amt num">${fmt(tot)}</div></div>`; }).join('')}</div>
     <div style="display:flex;gap:8px"><button class="btn" id="pv-save" ${S.canWrite && S.db ? '' : 'disabled'}>שמירה</button><button class="btn ghost" id="pv-cancel">ביטול</button></div></div>`;
 }
 async function savePreview() {
   const p = S.preview; if (!p || !S.db) return;
   $('#pv-save').disabled = true;
   try {
-    for (const [k, g] of Object.entries(p)) {
-      // A file can cover only part of a billing month (e.g. an export by date range). Merge with what is
-      // already saved instead of replacing it, so no transaction is lost; identical lines are counted once each.
-      const prev = S.statements.find(s => `${s.card}_${s.month}` === k);
-      let rows = g.rows;
-      if (prev && Array.isArray(prev.rows)) {
-        const key = r => `${r.d}|${String(r.m).trim()}|${(+r.a).toFixed(2)}`;
-        const have = {}; prev.rows.forEach(r => { have[key(r)] = (have[key(r)] || 0) + 1; });
-        const seen = {}; const extra = [];
-        g.rows.forEach(r => { const kk = key(r); seen[kk] = (seen[kk] || 0) + 1; if (seen[kk] > (have[kk] || 0)) extra.push(r); });
-        rows = [...prev.rows, ...extra];
-      }
-      await S.db.doc('statements/' + k).set({ card: g.card, month: g.month, label: g.label || (prev && prev.label) || '', rows, uploadedAt: Date.now(), by: S.me || null });
-    }
+    for (const [k, g] of Object.entries(p)) await S.db.doc('statements/' + k).set({ card: g.card, month: g.month, label: g.label, rows: g.rows, uploadedAt: Date.now(), by: S.me || null });
     const first = Object.values(p)[0];
     S.preview = null; renderPreview(); S.month = first.month; toast('הדפים נשמרו'); go('month');
   } catch (e) { writeErr(e); $('#pv-save') && ($('#pv-save').disabled = false); }
